@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pytorch-maml"
+version = "0.1.0"
+description = ""
+authors = ["Tristan Deleu <tristan.deleu@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+typing-extensions = "^4.12.2"
+pytorch-meta = {git = "https://github.com/104ki/pytorch-meta", rev = "master"}
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+

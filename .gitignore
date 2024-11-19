@@ -105,3 +105,10 @@ venv.bak/
 
 # Temporary
 tmp/
+
+# Data folder
+/data/
+
+# result folder
+/results/
+/result/
