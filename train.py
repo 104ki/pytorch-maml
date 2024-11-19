@@ -1,14 +1,15 @@
-import torch
+import json
+import logging
 import math
 import os
 import time
-import json
-import logging
 
+import torch
 from torchmeta.utils.data import BatchMetaDataLoader
 
 from maml.datasets import get_benchmark_by_name
 from maml.metalearners import ModelAgnosticMetaLearning
+
 
 def main(args):
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
@@ -51,7 +52,8 @@ def main(args):
                                               num_workers=args.num_workers,
                                               pin_memory=True)
 
-    meta_optimizer = torch.optim.Adam(benchmark.model.parameters(), lr=args.meta_lr)
+    meta_optimizer = torch.optim.Adam(
+        benchmark.model.parameters(), lr=args.meta_lr)
     metalearner = ModelAgnosticMetaLearning(benchmark.model,
                                             meta_optimizer,
                                             first_order=args.first_order,
@@ -63,7 +65,8 @@ def main(args):
     best_value = None
 
     # Training loop
-    epoch_desc = 'Epoch {{0: <{0}d}}'.format(1 + int(math.log10(args.num_epochs)))
+    epoch_desc = 'Epoch {{0: <{0}d}}'.format(
+        1 + int(math.log10(args.num_epochs)))
     for epoch in range(args.num_epochs):
         metalearner.train(meta_train_dataloader,
                           max_batches=args.num_batches,
@@ -102,48 +105,48 @@ if __name__ == '__main__':
 
     # General
     parser.add_argument('folder', type=str,
-        help='Path to the folder the data is downloaded to.')
+                        help='Path to the folder the data is downloaded to.')
     parser.add_argument('--dataset', type=str,
-        choices=['sinusoid', 'omniglot', 'miniimagenet'], default='omniglot',
-        help='Name of the dataset (default: omniglot).')
+                        choices=['sinusoid', 'omniglot', 'miniimagenet'], default='omniglot',
+                        help='Name of the dataset (default: omniglot).')
     parser.add_argument('--output-folder', type=str, default=None,
-        help='Path to the output folder to save the model.')
+                        help='Path to the output folder to save the model.')
     parser.add_argument('--num-ways', type=int, default=5,
-        help='Number of classes per task (N in "N-way", default: 5).')
+                        help='Number of classes per task (N in "N-way", default: 5).')
     parser.add_argument('--num-shots', type=int, default=5,
-        help='Number of training example per class (k in "k-shot", default: 5).')
+                        help='Number of training example per class (k in "k-shot", default: 5).')
     parser.add_argument('--num-shots-test', type=int, default=15,
-        help='Number of test example per class. If negative, same as the number '
-        'of training examples `--num-shots` (default: 15).')
+                        help='Number of test example per class. If negative, same as the number '
+                        'of training examples `--num-shots` (default: 15).')
 
     # Model
     parser.add_argument('--hidden-size', type=int, default=64,
-        help='Number of channels in each convolution layer of the VGG network '
-        '(default: 64).')
+                        help='Number of channels in each convolution layer of the VGG network '
+                        '(default: 64).')
 
     # Optimization
     parser.add_argument('--batch-size', type=int, default=25,
-        help='Number of tasks in a batch of tasks (default: 25).')
+                        help='Number of tasks in a batch of tasks (default: 25).')
     parser.add_argument('--num-steps', type=int, default=1,
-        help='Number of fast adaptation steps, ie. gradient descent '
-        'updates (default: 1).')
+                        help='Number of fast adaptation steps, ie. gradient descent '
+                        'updates (default: 1).')
     parser.add_argument('--num-epochs', type=int, default=50,
-        help='Number of epochs of meta-training (default: 50).')
+                        help='Number of epochs of meta-training (default: 50).')
     parser.add_argument('--num-batches', type=int, default=100,
-        help='Number of batch of tasks per epoch (default: 100).')
+                        help='Number of batch of tasks per epoch (default: 100).')
     parser.add_argument('--step-size', type=float, default=0.1,
-        help='Size of the fast adaptation step, ie. learning rate in the '
-        'gradient descent update (default: 0.1).')
+                        help='Size of the fast adaptation step, ie. learning rate in the '
+                        'gradient descent update (default: 0.1).')
     parser.add_argument('--first-order', action='store_true',
-        help='Use the first order approximation, do not use higher-order '
-        'derivatives during meta-optimization.')
+                        help='Use the first order approximation, do not use higher-order '
+                        'derivatives during meta-optimization.')
     parser.add_argument('--meta-lr', type=float, default=0.001,
-        help='Learning rate for the meta-optimizer (optimization of the outer '
-        'loss). The default optimizer is Adam (default: 1e-3).')
+                        help='Learning rate for the meta-optimizer (optimization of the outer '
+                        'loss). The default optimizer is Adam (default: 1e-3).')
 
     # Misc
     parser.add_argument('--num-workers', type=int, default=1,
-        help='Number of workers to use for data-loading (default: 1).')
+                        help='Number of workers to use for data-loading (default: 1).')
     parser.add_argument('--verbose', action='store_true')
     parser.add_argument('--use-cuda', action='store_true')
 

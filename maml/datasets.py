@@ -1,16 +1,17 @@
-import torch.nn.functional as F
-
 from collections import namedtuple
-from torchmeta.datasets import Omniglot, MiniImagenet
-from torchmeta.toy import Sinusoid
-from torchmeta.transforms import ClassSplitter, Categorical, Rotation
-from torchvision.transforms import ToTensor, Resize, Compose
 
-from maml.model import ModelConvOmniglot, ModelConvMiniImagenet, ModelMLPSinusoid
+import torch.nn.functional as F
+from torchmeta.datasets import MiniImagenet, Omniglot
+from torchmeta.toy import Sinusoid
+from torchmeta.transforms import Categorical, ClassSplitter, Rotation
+from torchvision.transforms import Compose, Resize, ToTensor
+
+from maml.model import ModelConvMiniImagenet, ModelConvOmniglot, ModelMLPSinusoid
 from maml.utils import ToTensor1D
 
 Benchmark = namedtuple('Benchmark', 'meta_train_dataset meta_val_dataset '
                                     'meta_test_dataset model loss_function')
+
 
 def get_benchmark_by_name(name,
                           folder,
@@ -77,11 +78,13 @@ def get_benchmark_by_name(name,
 
         meta_train_dataset = MiniImagenet(folder,
                                           transform=transform,
-                                          target_transform=Categorical(num_ways),
+                                          target_transform=Categorical(
+                                              num_ways),
                                           num_classes_per_task=num_ways,
                                           meta_train=True,
                                           dataset_transform=dataset_transform,
-                                          download=True)
+                                          download=False,
+                                          tar_gz_path='data/miniimagenet/mini-imagenet.tar.gz')
         meta_val_dataset = MiniImagenet(folder,
                                         transform=transform,
                                         target_transform=Categorical(num_ways),
@@ -90,7 +93,8 @@ def get_benchmark_by_name(name,
                                         dataset_transform=dataset_transform)
         meta_test_dataset = MiniImagenet(folder,
                                          transform=transform,
-                                         target_transform=Categorical(num_ways),
+                                         target_transform=Categorical(
+                                             num_ways),
                                          num_classes_per_task=num_ways,
                                          meta_test=True,
                                          dataset_transform=dataset_transform)
