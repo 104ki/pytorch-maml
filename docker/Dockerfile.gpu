@@ -1,0 +1,27 @@
+FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
+
+RUN apt update && apt install -y git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=ssh cd /root && \
+    mkdir -p -m 0700 ~/.ssh && \
+    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+    git clone git@github.com:104ki/pytorch-maml.git && \
+    chmod 775 /root && chmod 775 -R /root/pytorch-maml
+
+RUN pip install poetry \
+    && cd /root/pytorch-maml && poetry install
+
+
+ENV USER myuser
+ENV UID 1000
+RUN groupadd -g ${UID} ${USER} && \
+    useradd -m -u ${UID} -g ${USER} ${USER}
+
+USER ${USER}
+
+
+WORKDIR /home/customuser
+
+ENTRYPOINT ["/root/pytorch-maml/.venv/bin/python"]
+

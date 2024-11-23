@@ -46,3 +46,29 @@ If you want to cite this paper
   url       = {http://arxiv.org/abs/1703.03400}
 }
 ```
+
+## Docker
+
+### Build
+
+```bash
+docker build --ssh default -f docker/Dockerfile.gpu -t pytorch-gpu .
+```
+
+### RUN
+
+```bash
+docker run \
+    -v $(pwd)/data:/mnt/data \
+    -v $(pwd)/results:/mnt/results \
+    --gpus all \
+    --shm-size 4G \
+    pytorch-gpu \
+    /root/pytorch-maml/train.py /mnt/data \
+        --dataset miniimagenet \
+        --num-ways 5 --num-shots 1 \
+        --use-cuda --step-size 0.4 \
+        --batch-size 16 --num-workers 8 \
+        --num-epochs 600 --output-folder /mnt/results \
+        --verbose
+```

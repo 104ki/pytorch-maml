@@ -344,7 +344,7 @@ name = "pytorch-meta"
 version = "1.9.0"
 description = "Dataloaders for meta-learning in Pytorch"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.9,<3.11"
 files = []
 develop = false
 
@@ -360,7 +360,7 @@ tqdm = ">=4.0.0"
 type = "git"
 url = "https://github.com/104ki/pytorch-meta"
 reference = "master"
-resolved_reference = "cc6d7d10e1373f33a76033f92f9c051221290542"
+resolved_reference = "265b44a6c7bc3940647423fbd3892114e96d26e6"
 
 [[package]]
 name = "requests"
@@ -495,5 +495,5 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.9,<3.10"
-content-hash = "7a8d5b831b7d682ea92ce8d04256034dac49836f8a69fabe19295b3548528ed9"
+python-versions = ">=3.9,<3.11"
+content-hash = "1e83b39ebc146b207e6315f288e7976fa800f5780ba870a452c814644a1a7086"
